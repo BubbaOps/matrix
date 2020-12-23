@@ -1,0 +1,181 @@
+---
+version: "3"
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge
+volumes:
+  mysql:
+    driver: local
+  mssql:
+    driver: local
+  postgres:
+    driver: local
+  mariadb:
+    driver: local
+  memcached:
+    driver: local
+  redis:
+    driver: local
+  docker-in-docker:
+    driver: local
+services:
+  mariadb:
+    build:
+      context: mariadb
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      - TZ=${WORKSPACE_TIMEZONE}
+      - MYSQL_DATABASE=${MARIADB_DATABASE}
+      - MYSQL_USER=${MARIADB_USER}
+      - MYSQL_PASSWORD=${MARIADB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    networks:
+      - private
+  memcached:
+    build:
+      context: memcached
+    volumes:
+      - ./memcached/data:/var/lib/memcached
+    ports:
+      - "11211:11211"
+    depends_on:
+      - php-fpm
+    networks:
+      - private
+  mssql:
+    build:
+      context: mssql
+    ports:
+      - "1433:1433"
+    tty: true
+    environment:
+      - MSSQL_PID=Express
+      - MSSQL_DATABASE=${MSSQL_DATABASE}
+      - SA_PASSWORD=${MSSQL_PASSWORD}
+      - ACCEPT_EULA=Y
+    volumes:
+      - ./mssql/data:/var/opt/mssql
+    networks:
+      - private
+  mysql:
+    build:
+      context: mysql
+    ports:
+      - "3306:3306"
+    tty: true
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${WORKSPACE_TIMEZONE}
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - private
+  nginx:
+    build:
+      context: nginx
+      args:
+        PHP_UPSTREAM_CONTAINER: php-fpm
+        PHP_UPSTREAM_PORT: 9000
+    volumes:
+      - ../:/var/www
+      - ../storage/logs:/var/log/nginx
+      - ../storage/logs:/etc/nginx/sites-available
+      - ../storage/logs:/etc/nginx/ssl
+    ports:
+      - "80:80"
+      - "443:443"
+      - "81:81"
+    tty: true
+    depends_on:
+      - php-fpm
+    networks:
+      - private
+  php-fpm:
+    build:
+      context: php-fpm
+      args:
+        BASEIMAGE_PHP_VERSION: 7.4
+        BASE_IMAGE_TAG_PREFIX: latest
+    expose:
+      - "9000"
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    volumes:
+      - ../:/var/www
+      - ./php-fpm/php7.4.ini:/usr/local/etc/php/php.ini
+      - docker-in-docker:/certs/client
+    tty: true
+    environment:
+      - DOCKER_HOST=tcp://docker-in-docker:2376
+      - DOCKER_TLS_VERIFY=1
+      - DOCKER_TLS_CERTDIR=/certs
+      - DOCKER_CERT_PATH=/certs/client
+    networks:
+      - private
+    depends_on:
+      - workspace
+    links:
+      - docker-in-docker
+  postgres:
+    build:
+      context: postgres
+    ports:
+      - "5432:5432"
+    tty: true
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - private
+  redis:
+    build:
+      context: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+    tty: true
+    networks:
+      - private
+  workspace:
+    build:
+      context: workspace
+      args:
+        DEVCONTAINER_PHP_VERSION: 7.4
+        DEVCONTAINER_WORKSPACE_FOLDER: /var/www
+    volumes:
+      - ../:/var/www
+    tty: true
+    environment:
+      - DOCKER_HOST=tcp://docker-in-docker:2376
+      - DOCKER_TLS_VERIFY=1
+      - DOCKER_TLS_CERTDIR=/certs
+      - DOCKER_CERT_PATH=/certs/client
+    networks:
+      - public
+      - private
+    links:
+      - docker-in-docker
+  docker-in-docker:
+    image: docker:19.03-dind
+    environment:
+      DOCKER_TLS_SAN: DNS:docker-in-docker
+    privileged: true
+    volumes:
+      - ../:/var/www
+      - docker-in-docker:/certs/client
+    expose:
+      - 2375
+    networks:
+      - backend
