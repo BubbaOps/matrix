@@ -1,0 +1,16 @@
+{
+    "name": "Laravel",
+    "dockerComposeFile": "docker-compose.yml",
+    "remoteUser": "developer",
+    "runServices": [
+        "nginx",
+        "php-fpm",
+        "redis",
+        "mysql"
+    ],
+    "service": "workspace",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/var/www,type=bind,consistency=delegated",
+    "workspaceFolder": "/var/www",
+    "shutdownAction": "stopCompose",
+    "postCreateCommand": "uname -a"
+}
