@@ -1,0 +1,84 @@
+{
+    "name": "bubbaops/matrix",
+    "description": "Configures VS Code .devcontainer(s) for developing Laravel applications with Laradock..",
+    "homepage": "http://github.com/BubbaOps/matrix",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "docker",
+        "php-docker",
+        "php-container",
+        "php-environment",
+        "docker-environment",
+        "php-docker-image",
+        "laradock",
+        "laravel-docker",
+        "laravel-docker-compose",
+        "docker-laravel",
+        "vscode",
+        "vscode-devcontainer",
+        "php-devcontainer",
+        "php-vscode",
+        "laravel-vscode"
+    ],
+    "authors": [
+        {
+            "name": "Bubba Hines",
+            "email": "bubba@bubbaops.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "source": "http://github.com/BubbaOps/matrix",
+        "docs": "https://github.com/BubbaOps/matrix/blob/master/README.md",
+        "issues": "https://github.com/BubbaOps/matrix/issues"
+    },
+    "require": {
+        "php": "^7.3|^8.0",
+        "doctrine/lexer": "^1.2",
+        "illuminate/console": "^6 || ^7 || ^8",
+        "illuminate/filesystem": "^6 || ^7 || ^8",
+        "illuminate/support": "^6 || ^7 || ^8"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2",
+        "illuminate/config": "^6 || ^7 || ^8",
+        "illuminate/view": "^6 || ^7 || ^8",
+        "phpunit/phpunit": "^8.5 || ^9",
+        "squizlabs/php_codesniffer": "^3.0",
+        "phpmd/phpmd" : "^2.6",
+        "phpdocumentor/phpdocumentor" : "^3.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bubbaops\\Matrix\\Providers\\MatrixServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Bubbaops\\Matrix\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@php vendor/bin/phpunit"
+        ],
+        "psr2check": [
+            "@php vendor/bin/phpcs --standard=PSR2 src/"
+        ],
+        "psr2autofix": [
+            "@php vendor/bin/phpcbf --standard=PSR2 src/"
+        ],
+        "docs": [
+            "@php vendor/bin/phpdoc -d \"src\" -t \"docs\""
+        ]
+    }
+}
