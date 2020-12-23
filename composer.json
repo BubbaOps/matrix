@@ -1,6 +1,6 @@
 {
     "name": "bubbaops/matrix",
-    "description": "Configures VS Code .devcontainer(s) for developing Laravel applications with Laradock..",
+    "description": "Zero Configuration .devscontainer for Laravel Developers using VS Code",
     "homepage": "http://github.com/BubbaOps/matrix",
     "minimum-stability": "dev",
     "prefer-stable": true,
