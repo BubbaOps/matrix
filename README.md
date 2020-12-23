@@ -1,10 +1,19 @@
 Matrix
 ============
+[![forthebadge](https://forthebadge.com/images/badges/built-by-neckbeards.svg)](https://forthebadge.com) 
+[![forthebadge](https://forthebadge.com/images/badges/compatibility-emacs.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/designed-in-etch-a-sketch.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/gluten-free.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/works-on-my-machine.svg)](https://forthebadge.com)
 
 [![Latest Stable Version](https://poser.pugx.org/BubbaOps/matrix/v/stable)](https://packagist.org/packages/BubbaOps/matrix)
 [![License](https://poser.pugx.org/BubbaOps/matrix/license)](https://packagist.org/packages/BubbaOps/matrix)
 [![composer.lock](https://poser.pugx.org/BubbaOps/matrix/composerlock)](https://packagist.org/packages/BubbaOps/matrix)
 [![Total Downloads](https://poser.pugx.org/BubbaOps/matrix/downloads)](https://packagist.org/packages/BubbaOps/matrix)
+
+
+
+
 
 Requirements
 ------------
